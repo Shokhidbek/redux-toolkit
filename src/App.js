@@ -1,25 +1,33 @@
-import logo from './logo.svg';
-import './App.css';
+import React , {useEffect}  from 'react'
+import {useSelector , useDispatch} from 'react-redux'
+import axios from 'axios'
+import { getPosts } from './features/postsSlice'
+const App = () => {
+    const {posts} = useSelector(state => state.posts )
+    const dispatch = useDispatch()
 
-function App() {
+    useEffect(() => {
+       const fetchPost = async() => {
+        const response = await axios.get('https://jsonplaceholder.typicode.com/posts')
+        const data = response.data
+         dispatch(getPosts(data))
+       }
+      fetchPost()
+    }, [])
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+        {
+            posts && posts.map(post => {
+                return(
+                    <div key={post.id}>
+                        <h1>
+                            {post.name}
+                        </h1>
+                    </div>
+                )
+            })
+        }
     </div>
-  );
+  )
 }
-
-export default App;
+export default App
